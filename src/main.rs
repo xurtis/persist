@@ -4,7 +4,7 @@
  *
  * Inspired by this video: https://www.youtube.com/watch?v=Wim9WJeDTHQ
  */
-use std::collections::{BTreeSet, BinaryHeap};
+use std::collections::BinaryHeap;
 use std::cmp::Ordering::{*, self};
 
 #[derive(Ord, PartialEq, Eq)]
@@ -29,7 +29,6 @@ impl PartialOrd for Pair {
 
 fn main() {
     let mut queue = initial_queue();
-    let mut seen = BTreeSet::new();
 
     let mut greatest = 0;
     let mut greatest_depth = 0;
@@ -50,8 +49,7 @@ fn main() {
             println!("{:>4}: {:>30} | {:>4}: {:>30}", greatest_depth, greatest, count, next);
         }
         for factors in factor_combinations(next) {
-            if factors != next && !seen.contains(&factors) {
-                seen.insert(factors);
+            if factors != next {
                 queue.push(Pair { value: factors, count: count + 1 })
             }
         }
