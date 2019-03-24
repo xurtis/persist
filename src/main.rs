@@ -4,7 +4,28 @@
  *
  * Inspired by this video: https://www.youtube.com/watch?v=Wim9WJeDTHQ
  */
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, BinaryHeap};
+use std::cmp::Ordering::{*, self};
+
+#[derive(Ord, PartialEq, Eq)]
+struct Pair {
+    value: u64,
+    count: u32,
+}
+
+impl PartialOrd for Pair {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        if self.count > other.count {
+            Some(Greater)
+        } else if self.value < other.value {
+            Some(Greater)
+        } else if self.count == other.count && self.value == other.value {
+            Some(Equal)
+        } else {
+            Some(Less)
+        }
+    }
+}
 
 fn main() {
     let mut queue = initial_queue();
@@ -14,7 +35,7 @@ fn main() {
     let mut greatest_depth = 0;
     let mut last_shown = 0;
 
-    while let Some((next, count)) = queue.pop() {
+    while let Some(Pair { value: next, count }) = queue.pop() {
         if count > greatest_depth {
             greatest_depth = count;
             greatest = next;
@@ -31,15 +52,15 @@ fn main() {
         for factors in factor_combinations(next) {
             if factors != next && !seen.contains(&factors) {
                 seen.insert(factors);
-                queue.push((factors, count + 1))
+                queue.push(Pair { value: factors, count: count + 1 })
             }
         }
     }
 }
 
 /// Prime the queue with numbers with small factors.
-fn initial_queue() -> Vec<(u64, u32)> {
-    (1..=4).into_iter().map(|i| (i, 0)).collect()
+fn initial_queue() -> BinaryHeap<Pair> {
+    (1..=4).into_iter().map(|i| Pair { value: i, count: 0 }).collect()
 }
 
 /// Get all of the single digit factor combintions for a number.
