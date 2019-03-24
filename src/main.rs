@@ -24,10 +24,9 @@ fn main() {
             greatest = next;
             last_shown = count;
             println!("{:>4}: {:>30}", count, next);
-        } else if count <= last_shown {
+        } else if count != last_shown {
             last_shown = count;
-            println!("{:>4}: {:>30}", count, next);
-            println!("{:>4}: {:>30}", greatest_depth, greatest);
+            println!("{:>4}: {:>30} | {:>4}: {:>30}", greatest_depth, greatest, count, next);
         }
         for factors in factor_combinations(next) {
             if factors != next && !seen.contains(&factors) {
@@ -40,7 +39,7 @@ fn main() {
 
 /// Prime the queue with numbers with small factors.
 fn initial_queue() -> Vec<(u64, u32)> {
-    (1..=9).into_iter().map(|i| (i, 0)).collect()
+    (1..=4).into_iter().map(|i| (i, 0)).collect()
 }
 
 /// Get all of the single digit factor combintions for a number.
